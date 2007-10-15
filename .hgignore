@@ -1,0 +1,7 @@
+syntax: glob
+
+.*.sw?
+Makefile
+*.o
+*.so
+mkmf.log
