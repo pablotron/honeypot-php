@@ -1,0 +1,39 @@
+Honeypot-PHP README
+===================
+
+
+
+Usage:
+
+  # API key from projecthonepot.org
+  $api_key = 'asdf1234asdf';
+
+  # ip (ex $_SERVER['REMOTE_ADDR'])
+  $addr = '127.1.10.1';
+
+  # create new honeypot instance
+  $honeypot = new Honeypot($api_key);  
+
+  # check ip
+  if ($honeypot->is_ok($addr)) {
+    echo 'address is okay';
+  } else {
+    echo 'address is NOT OKAY';
+  }
+
+If you need more details, you can use the check() method instead:
+
+  $result = $honeypot->check($addr);
+  if ($result) {
+    if ($result['age'] < 128) {
+      if ($result['threat'] > 128) {
+        echo 'address is NOT OKAY';
+      } else {
+        echo 'address is okay (threat too low)';
+      }
+    } else {
+      echo 'address is okay (entry too old)';
+    }
+  } else {
+    echo 'address is okay (not in honeypot database)';
+  }
