@@ -6,7 +6,7 @@
 http://pear.php.net/dtd/tasks-1.0.xsd
 http://pear.php.net/dtd/package-2.0
 http://pear.php.net/dtd/package-2.0.xsd">
-  <name>Honeypot-PHP</name>
+  <name>Honeypot</name>
 
   <uri>http://pablotron.org/files/php/honeypot-php-0.1.0</uri>
 
@@ -25,7 +25,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <active>yes</active>
   </lead>
 
-  <date>2007-10-16</date>
+  <date>2007-10-15</date>
   <version>
     <release>0.1.0</release>
     <api>0.1.0</api>
@@ -48,6 +48,18 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dir>
   </contents>
   
+  <dependencies>
+    <required>
+      <php>
+        <min>4.2</min>
+        <max>6.0.0</max>
+      </php>
+      <pearinstaller>
+        <min>1.4.0dev13</min>
+      </pearinstaller>
+    </required>
+  </dependencies>
+
   <phprelease>
     <filelist>
       <!-- install as='honeypot.php' name='honeypot.php'/-->
