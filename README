@@ -35,7 +35,7 @@ file into your project and require it directly.  If you have PEAR
 installed -- most recent PHP installations do -- you can install
 Honeypot-PHP system-wide from the command-line like so:
 
-  sudo pear install http://pablotron.org/files/honeypot-php-0.1.0.tar.gz
+  sudo pear install http://pablotron.org/files/php/Honeypot-0.1.0.tgz
 
 
 Usage
