@@ -43,7 +43,7 @@ Usage
 Using Honeypot-PHP is straightforward.  Create a Honeypot instance using
 your API key, then pass it a hostname or IP address.
 
-  # API key (from projecthonepot.org)
+  # API key (from projecthoneypot.org)
   $api_key = 'asdf1234asdf';
 
   # ip (usually $_SERVER['REMOTE_ADDR'])
