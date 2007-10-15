@@ -2,13 +2,19 @@
 
 require 'honeypot.php';
 
-$api_key = $_REQUEST['api_key'];
+$key = $_REQUEST['key'];
 $host = $_REQUEST['host'];
 
-$honeypot = new Honeypot($api_key);
+$honeypot = new Honeypot($key, array(
+  'debug' => true,
+));
 
 $result = $honeypot->check($host);
 
+# dump result
+print_r($result);
+
+echo "<p>";
 if ($result) {
   if ($result['age'] < 128) {
     if ($result['threat'] > 128) {
@@ -22,6 +28,6 @@ if ($result) {
 } else {
   echo 'address is okay (not in honeypot database)';
 }
-
+echo "</p>";
 
 ?>
