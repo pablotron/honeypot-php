@@ -1,14 +1,52 @@
-Honeypot-PHP README
-===================
+Honeypot-PHP 0.1.0 README
+=========================
+
+This document was last updated on Mon Oct 15 00:01:32 2007.  Please see
+the file COPYING for licensing and warranty information.
+
+Overview
+========
+PHP bindings for the Project Honeypot (http://projecthoneypot.org/) HTTP
+blacklist.  Honeypot-PHP can be used to block comment spammers,
+malicious bots, and other forms of abuse.  Note that you'll need an API
+key from Project Honeypot order to use this library.  See the
+Installation and Usage sections below for instructions on installing and
+using Honeypot-PHP.
+
+The latest stable version of this software can always be found at the
+following URL:
+
+  http://pablotron.org/software/honeypot-php/ 
+
+More information about Project Honeypot, along with information about
+contributing can be found at the Project Honeypot web site, at
+
+  http://projecthoneypot.org/
+
+Note that Honeypot-PHP is distributed under the terms of the revised BSD
+license.  A copy of the license can be found in the file COPYING, and at
+the top of the file honeypot.php.
 
 
+Installation
+============
+The easiest way to install Honeypot-PHP is to just copy the honeypot.php
+file into your project and require it directly.  If you have PEAR
+installed -- most recent PHP installations do -- you can install
+Honeypot-PHP system-wide from the command-line like so:
 
-Usage:
+  sudo pear install http://pablotron.org/files/honeypot-php-0.1.0.tar.gz
 
-  # API key from projecthonepot.org
+
+Usage
+=====
+Using Honeypot-PHP is straightforward.  Create a Honeypot instance using
+your API key, then pass it a hostname or IP address.
+
+  # API key (from projecthonepot.org)
   $api_key = 'asdf1234asdf';
 
-  # ip (ex $_SERVER['REMOTE_ADDR'])
+  # ip (usually $_SERVER['REMOTE_ADDR'])
   $addr = '127.1.10.1';
 
   # create new honeypot instance
@@ -21,19 +59,46 @@ Usage:
     echo 'address is NOT OKAY';
   }
 
-If you need more details, you can use the check() method instead:
+You can override the default age and threat thesholds by passing
+additional arguments to the constructor, like this:
 
+  $honeypot = new Honeypot($api_key, array(
+    'ok_age'    => 300, # set age threshold to 300 days
+    'ok_threat' => 50,  # set threat level threshold to 50
+  ));
+
+If you need more details, you can use check() instead of is_ok().  This
+method allows you to view the age, threat level, and type of entry in
+the Project Honeypot blacklist.  
+
+  # check the address
   $result = $honeypot->check($addr);
+
   if ($result) {
-    if ($result['age'] < 128) {
-      if ($result['threat'] > 128) {
-        echo 'address is NOT OKAY';
-      } else {
-        echo 'address is okay (threat too low)';
-      }
-    } else {
-      echo 'address is okay (entry too old)';
-    }
+    echo "age: {$result['age']}, threat: {$result['threat']}";
   } else {
-    echo 'address is okay (not in honeypot database)';
+    echo 'no blacklist entry for address';
   }
+
+Finally, if you pass the result of check() to result_info(), you'll get
+a boolean (like is_ok) plus a printable string describing the result:
+
+  # check the address
+  $result = $honeypot->check($addr);
+
+  # get result description
+  $info = $honeypot->result_info($result);
+  
+  # get opts
+  $ok = $info['ok'] ? 'ok' : 'NOT OKAY';
+  $why = $info['why'];
+
+  echo "<p>address is $ok: $why</p>";
+
+See test.php for a working example.
+
+
+About the Author
+================
+Paul Duncan <pabs@pablotron.org>
+http://pablotron.org/

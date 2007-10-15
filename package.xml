@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding='iso-8859-1'?>
+<package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0"
+    xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+  <name>Honeypot-PHP</name>
+
+  <uri>http://pablotron.org/files/php/honeypot-php-0.1.0</uri>
+
+  <summary>Project Honeypot interface for PHP.</summary>
+  <description>
+    PHP bindings for the Project Honeypot (http://projecthoneypot.org/)
+    HTTP blacklist.  Honeypot-PHP can be used to block comment spammers,
+    malicious bots, and other forms of abuse.  Note that you'll need an
+    API key from Project Honeypot order to use this library.  
+  </description>
+
+  <lead>
+    <name>Paul Duncan</name>
+    <user>pabs</user>
+    <email>pabs@pablotron.org</email>
+    <active>yes</active>
+  </lead>
+
+  <date>2007-10-16</date>
+  <version>
+    <release>0.1.0</release>
+    <api>0.1.0</api>
+  </version>
+  <stability>
+    <release>beta</release>
+    <api>beta</api>
+  </stability>
+
+  <license uri="http://opensource.org/licenses/bsd-license.html">BSD License (revised)</license>
+
+  <notes>
+    Put release notes here.
+    They can be multi-line
+  </notes>
+
+  <contents>
+    <dir name="/">
+      <file name='honeypot.php' role='php'/>
+    </dir>
+  </contents>
+  
+  <phprelease>
+    <filelist>
+      <!-- install as='honeypot.php' name='honeypot.php'/-->
+    </filelist>
+  </phprelease>
+
+  <changelog>
+    <release>
+      <version>
+        <release>0.1.0</release>
+        <api>0.1.0</api>
+      </version>
+
+      <stability>
+        <release>beta</release>
+        <api>beta</api>
+      </stability>
+
+      <date>2007-10-15</date>
+      <license uri="http://opensource.org/licenses/bsd-license.html">BSD License (revised)</license>
+
+      <notes>
+initial release.
+      </notes>
+    </release>
+ </changelog>
+</package>

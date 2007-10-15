@@ -1,7 +1,40 @@
 <?php
 
+#
+# Honeypot-PHP - PHP interface for the Project Honeypot HTTP blacklist.
+#
+# Copyright (c) 2007, Paul Duncan <pabs@pablotron.org>
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#   * Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#   * Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#   * The names of its contributors may not be used to endorse or 
+#     promote products derived from this software without specific prior
+#     written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+# OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
 class Honeypot {
-  var $FLAGS = array('suspicious', 'harvester', 'comment_spammer');
+  var $VERSION = '0.1.0';
 
   var $HONEYPOT_DEFAULTS = array(
     # root to append to dns requests
@@ -18,6 +51,8 @@ class Honeypot {
 
     'debug'     => false,
   );
+
+  var $FLAGS = array('suspicious', 'harvester', 'comment_spammer');
 
   function Honeypot($api_key, $opt = array()) {
     $this->api_key = $api_key;
@@ -37,8 +72,59 @@ class Honeypot {
   function is_ok($str) {
     $r = $this->check($str);
 
-    return (!$r || $r['age'] > $this->opt['ok_age'] || 
+    return (!$r || !$r['flags'] || 
+            $r['age'] > $this->opt['ok_age'] || 
             $r['threat'] > $this->opt['ok_threat']);
+  }
+
+  function result_info($result) {
+    # check result (if null, entry isn't in blacklist)
+    if (!$result) {
+      return array(
+        'ok'  => true, 
+        'why' => 'not in honeypot blacklist'
+      );
+    }
+
+    # if we got here, the host has an entry in the blacklist,
+    # so let's find out why
+
+    # check the age of the entry
+    if ($result['age'] > $this->opt['ok_age']) {
+      # got a result, it's too old
+      return array(
+        'ok'  => true, 
+        'why' => 'entry is too old',
+      );
+    }
+
+    # if we got here, then the entry is new enough, so let's check
+    # the threat level
+
+    if ($result['threat'] < $this->opt['ok_threat']) {
+      # got a result, but the threat level is too low
+      return array(
+        'ok'  => true,
+        'why' => 'threat level too low',
+      );
+    }
+
+    # if we got here, then there is a recent entry in the blacklist with a
+    # high enough threat level, so let's find out why
+
+    # check all available flags 
+    $flags = array();
+    foreach (Honeypot::$FLAGS as $flag)
+      if ($result["is_$flag"])
+        $flags[] = $flag;
+
+    # entry is _not_ okay, return a hash containing the description
+    # and flags
+    return array(
+      'ok'    => false,
+      'why'   => join(', ', $flags),
+      'flags' => $flags,
+    );
   }
 
   ###################
