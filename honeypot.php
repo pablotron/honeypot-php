@@ -34,8 +34,10 @@
 #
 
 class Honeypot {
+  # version of Honeypot binding
   var $VERSION = '0.1.0';
 
+  # default configuration values
   var $HONEYPOT_DEFAULTS = array(
     # root to append to dns requests
     'root'      => 'dnsbl.httpbl.org',
@@ -52,8 +54,17 @@ class Honeypot {
     'debug'     => false,
   );
 
+  # flag names
   var $FLAGS = array('suspicious', 'harvester', 'comment_spammer');
 
+  #
+  # Create a new Honeypot instance.
+  #
+  # Example:
+  #
+  #   $api_key = '1234abcd6789';
+  #   $honeypot = new Honeypot($api_key);
+  #
   function Honeypot($api_key, $opt = array()) {
     $this->api_key = $api_key;
     $this->opt = array();
@@ -64,11 +75,19 @@ class Honeypot {
       $this->opt[$key] = $val;
   }
 
-  function check($ip) {
-    $host = $this->build_query($ip); 
-    return $host ? $this->do_query($host) : null;
-  }
-
+  #
+  # Is the given IP or hostname okay?
+  #
+  # Example:
+  #
+  #   # check ip '192.168.0.1'
+  #   $ok = $honeypot->is_ok('192.168.0.1');
+  #
+  #   if ($ok)
+  #     echo 'ip is okay';
+  #   else
+  #     echo 'ip is not okay';
+  #
   function is_ok($str) {
     $r = $this->check($str);
 
@@ -77,6 +96,38 @@ class Honeypot {
             $r['threat'] > $this->opt['ok_threat']);
   }
 
+  #
+  # Check the given IP or hostname and return the result.  Returns null
+  # if the IP or hostname was not found in the Honeypot blacklist.
+  #
+  # Example:
+  #
+  #   # check ip '192.168.0.1'
+  #   $result = $honeypot->check('192.168.0.1');
+  #
+  #   # dump result
+  #   print_r($result);
+  #
+  function check($ip) {
+    $host = $this->build_query($ip); 
+    return $host ? $this->do_query($host) : null;
+  }
+
+  #
+  # Get information about a result returned from check().  Returns a
+  # hash containing the status and a plain-text string describing the
+  # reason.
+  #
+  #   # check ip '192.168.0.1'
+  #   $result = $honeypot->check('192.168.0.1');
+  #
+  #   # get result information
+  #   $info = $honeypot->result_info($result);
+  #
+  #   # print out information
+  #   echo 'result: ' . ($info['ok'] ? 'ok' : 'not ok');
+  #   echo 'reason: ' . $info['why'];
+  #
   function result_info($result) {
     # check result (if null, entry isn't in blacklist)
     if (!$result) {
